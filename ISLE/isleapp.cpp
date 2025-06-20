@@ -394,6 +394,7 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
 #endif
 
 	switch (event->type) {
+	case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
 	case SDL_EVENT_MOUSE_MOTION:
 	case SDL_EVENT_MOUSE_BUTTON_DOWN:
 	case SDL_EVENT_MOUSE_BUTTON_UP:
