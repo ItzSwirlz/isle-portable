@@ -1,16 +1,18 @@
+#include "citro3d.h"
 #include "d3drmrenderer_citro3d.h"
 #include "miniwin.h"
+#include "miniwin/d3d.h"
 #include "miniwin/d3drm.h"
 #include "miniwin/windows.h"
 
-Direct3DRMRenderer* Citro3DRenderer::Create(DWORD width, DWORD height)
+Direct3DRMRenderer* Citro3DRenderer::Create()
 {
 	MINIWIN_NOT_IMPLEMENTED();
-	return new Citro3DRenderer(width, height);
+	return new Citro3DRenderer();
 }
 
 // constructor parameters not finalized
-Citro3DRenderer::Citro3DRenderer(DWORD width, DWORD height)
+Citro3DRenderer::Citro3DRenderer()
 {
 	MINIWIN_NOT_IMPLEMENTED();
 }
@@ -49,19 +51,30 @@ Uint32 Citro3DRenderer::GetMeshId(IDirect3DRMMesh* mesh, const MeshGroup* meshGr
 
 DWORD Citro3DRenderer::GetWidth()
 {
-	MINIWIN_NOT_IMPLEMENTED();
-	return 0;
+	return 400;
 }
 
 DWORD Citro3DRenderer::GetHeight()
 {
-	MINIWIN_NOT_IMPLEMENTED();
-	return 0;
+	return 240;
 }
 
 void Citro3DRenderer::GetDesc(D3DDEVICEDESC* halDesc, D3DDEVICEDESC* helDesc)
 {
+	// not sure if this is correct?
 	MINIWIN_NOT_IMPLEMENTED();
+
+	halDesc->dcmColorModel = D3DCOLORMODEL::RGB;
+	helDesc->dwFlags = D3DDD_DEVICEZBUFFERBITDEPTH;
+	helDesc->dwDeviceZBufferBitDepth = DDBD_24;
+	helDesc->dwDeviceRenderBitDepth = DDBD_24;
+	helDesc->dpcTriCaps.dwTextureCaps = D3DPTEXTURECAPS_PERSPECTIVE;
+	helDesc->dpcTriCaps.dwShadeCaps = D3DPSHADECAPS_ALPHAFLATBLEND;
+
+	// TODO: shouldn't this be bilinear
+	helDesc->dpcTriCaps.dwTextureFilterCaps = D3DPTFILTERCAPS_LINEAR;
+
+	memset(helDesc, 0, sizeof(D3DDEVICEDESC));
 }
 
 const char* Citro3DRenderer::GetName()
@@ -80,7 +93,12 @@ void Citro3DRenderer::EnableTransparency()
 	MINIWIN_NOT_IMPLEMENTED();
 }
 
-void Citro3DRenderer::SubmitDraw(DWORD meshId, const D3DRMMATRIX4D& modelViewMatrix, const Matrix3x3& normalMatrix, const Appearance& appearance)
+void Citro3DRenderer::SubmitDraw(
+	DWORD meshId,
+	const D3DRMMATRIX4D& modelViewMatrix,
+	const Matrix3x3& normalMatrix,
+	const Appearance& appearance
+)
 {
 	MINIWIN_NOT_IMPLEMENTED();
 }

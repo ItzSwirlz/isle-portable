@@ -4,7 +4,6 @@
 #include "d3drmtexture_impl.h"
 #include "ddraw_impl.h"
 
-
 #include <SDL3/SDL.h>
 #include <vector>
 
@@ -12,10 +11,10 @@ DEFINE_GUID(Citro3D_GUID, 0x682656F3, 0x0000, 0x0000, 0x00, 0x00, 0x00, 0x00, 0x
 
 class Citro3DRenderer : public Direct3DRMRenderer {
 public:
-	static Direct3DRMRenderer* Create(DWORD width, DWORD height);
+	static Direct3DRMRenderer* Create();
 
 	// constructor parameters not finalized
-	Citro3DRenderer(DWORD width, DWORD height);
+	Citro3DRenderer();
 	~Citro3DRenderer() override;
 
 	void PushLights(const SceneLight* lightsArray, size_t count) override;
@@ -40,7 +39,7 @@ public:
 
 inline static void Citro3DRenderer_EnumDevice(LPD3DENUMDEVICESCALLBACK cb, void* ctx)
 {
-	Direct3DRMRenderer* device = Citro3DRenderer::Create(400, 240);
+	Direct3DRMRenderer* device = Citro3DRenderer::Create();
 	if (device) {
 		EnumDevice(cb, ctx, device, Citro3D_GUID);
 		delete device;

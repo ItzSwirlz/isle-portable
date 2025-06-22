@@ -349,7 +349,8 @@ HRESULT DirectDrawImpl::CreateDevice(
 #endif
 #ifdef USE_CITRO3D
 	else if (SDL_memcmp(&guid, &Citro3D_GUID, sizeof(GUID)) == 0) {
-		renderer = Citro3DRenderer::Create(DDSDesc.dwWidth, DDSDesc.dwHeight);
+		// 3DS is always 400x240
+		renderer = Citro3DRenderer::Create();
 	}
 #endif
 #ifdef _WIN32
