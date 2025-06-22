@@ -8,13 +8,15 @@
 #include <SDL3/SDL.h>
 #include <vector>
 
-DEFINE_GUID(Citro3D_GUID, 0x682656F3, 0x0000, 0x0000, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3D);
+DEFINE_GUID(Citro3D_GUID, 0x682656F3, 0x0000, 0x0000, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3D, 0x13);
 
 class Citro3DRenderer : public Direct3DRMRenderer {
 public:
 	static Direct3DRMRenderer* Create(DWORD width, DWORD height);
-	// Citro3DRenderer(DWORD width, DWORD height, SDL_GLContext context, GLuint fbo, GLuint colorTex, GLuint depthRb);
-	// ~Citro3DRenderer() override;
+
+	// constructor parameters not finalized
+	Citro3DRenderer(DWORD width, DWORD height);
+	~Citro3DRenderer() override;
 
 	void PushLights(const SceneLight* lightsArray, size_t count) override;
 	void SetProjection(const D3DRMMATRIX4D& projection, D3DVALUE front, D3DVALUE back) override;
