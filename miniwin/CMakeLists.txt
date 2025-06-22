@@ -48,6 +48,19 @@ else()
   message(STATUS "🧩 OpenGL ES 2.x support not enabled")
 endif()
 
+if(NINTENDO_3DS)
+  find_library(CTRU_LIBRARY NAMES ctru)
+  find_library(CITRO3D_LIBRARY NAMES citro3d)
+  if(CTRU_LIBRARY AND CITRO3D_LIBRARY)
+    message(STATUS "Found libctru and citro3d: enabling Citro3D renderer")
+    target_sources(miniwin PRIVATE src/d3drm/backends/citro3d/renderer.cpp)
+    target_compile_definitions(miniwin PRIVATE USE_CITRO3D)
+    target_link_libraries(miniwin PRIVATE ctru citro3d)
+  else()
+    message(STATUS "🧩 Citro3D support not enabled")
+  endif()
+endif()
+
 if(WIN32)
   target_sources(miniwin PRIVATE
     src/d3drm/backends/directx9/actual.cpp
