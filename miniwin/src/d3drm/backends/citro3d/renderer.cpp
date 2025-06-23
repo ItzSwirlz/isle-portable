@@ -6,6 +6,11 @@
 #include "miniwin/windows.h"
 #include "citro3d.h"
 
+#include "vshader_shbin.h"
+#include <3ds/gpu/shaderProgram.h>
+#include <3ds/gpu/shbin.h>
+#include <c3d/base.h>
+
 Direct3DRMRenderer* Citro3DRenderer::Create(DWORD width, DWORD height)
 {
 	// TODO: Doesn't SDL call this function?
@@ -19,6 +24,7 @@ Direct3DRMRenderer* Citro3DRenderer::Create(DWORD width, DWORD height)
 // constructor parameters not finalized
 Citro3DRenderer::Citro3DRenderer(DWORD width, DWORD height)
 {
+	DVLB_s *vsh_dvlb;
 	m_width = width;
 	m_height = height;
 
@@ -28,6 +34,13 @@ Citro3DRenderer::Citro3DRenderer(DWORD width, DWORD height)
 	// TODO: is GPU_RB_RGBA8 correct?
 	// TODO: is GPU_RB_DEPTH24_STENCIL8 correct?
 	m_renderTarget = C3D_RenderTargetCreate(width, height, GPU_RB_RGBA8, GPU_RB_DEPTH24_STENCIL8);
+
+	shaderProgramInit(m_shaderProgram);
+	vsh_dvlb = DVLB_ParseFile((u32*)vshader_shbin, vshader_shbin_size);
+	shaderProgramSetVsh(m_shaderProgram, &vsh_dvlb->DVLE[0]);
+	C3D_BindProgram(m_shaderProgram);
+
+	// todo: move to scene init next
 
 	MINIWIN_NOT_IMPLEMENTED();
 }

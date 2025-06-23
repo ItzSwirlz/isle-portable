@@ -4,6 +4,7 @@
 #include "d3drmtexture_impl.h"
 #include "ddraw_impl.h"
 
+#include <3ds/gpu/shaderProgram.h>
 #include <SDL3/SDL.h>
 #include "citro3d.h"
 #include <vector>
@@ -42,6 +43,7 @@ public:
 private:
 	SDL_Surface* m_renderedImage;
 	C3D_RenderTarget* m_renderTarget;
+	shaderProgram_s* m_shaderProgram;
 };
 
 inline static void Citro3DRenderer_EnumDevice(LPD3DENUMDEVICESCALLBACK cb, void* ctx)
