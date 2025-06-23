@@ -88,7 +88,9 @@ private:
 inline static void Direct3DRMSoftware_EnumDevice(LPD3DENUMDEVICESCALLBACK cb, void* ctx)
 {
 	Direct3DRMRenderer* device = nullptr;
-	device = new Direct3DRMSoftwareRenderer(640, 480);
+	// TODO: quick hack for getting the game to load on 3ds
+	device = new Direct3DRMSoftwareRenderer(400, 240);
+	// device = new Direct3DRMSoftwareRenderer(640, 480);
 	EnumDevice(cb, ctx, device, SOFTWARE_GUID);
 	delete device;
 }
