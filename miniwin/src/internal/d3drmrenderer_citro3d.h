@@ -38,6 +38,8 @@ public:
 	void Flip() override;
 	void Draw2DImage(Uint32 textureId, const SDL_Rect& srcRect, const SDL_Rect& dstRect) override;
 	void Download(SDL_Surface* target) override;
+private:
+	SDL_Surface* m_renderedImage;
 };
 
 inline static void Citro3DRenderer_EnumDevice(LPD3DENUMDEVICESCALLBACK cb, void* ctx)

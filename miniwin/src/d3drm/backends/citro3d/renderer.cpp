@@ -17,12 +17,15 @@ Citro3DRenderer::Citro3DRenderer(DWORD width, DWORD height)
 {
 	m_width = width;
 	m_height = height;
+
+	// FIXME: is this the right pixel format?
+	m_renderedImage = SDL_CreateSurface(m_width, m_height, SDL_PIXELFORMAT_RGBA32);
 	MINIWIN_NOT_IMPLEMENTED();
 }
 
 Citro3DRenderer::~Citro3DRenderer()
 {
-	MINIWIN_NOT_IMPLEMENTED();
+	SDL_DestroySurface(m_renderedImage);
 }
 
 void Citro3DRenderer::PushLights(const SceneLight* lightsArray, size_t count)
@@ -105,6 +108,10 @@ HRESULT Citro3DRenderer::FinalizeFrame()
 void Citro3DRenderer::Resize(int width, int height, const ViewportTransform& viewportTransform)
 {
 	MINIWIN_NOT_IMPLEMENTED();
+	SDL_DestroySurface(m_renderedImage);
+
+	// FIXME: is this the right pixel format?
+	m_renderedImage = SDL_CreateSurface(m_width, m_height, SDL_PIXELFORMAT_RGBA32);
 }
 
 void Citro3DRenderer::Clear(float r, float g, float b)
