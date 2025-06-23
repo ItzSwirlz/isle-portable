@@ -4,9 +4,8 @@
 #include "d3drmtexture_impl.h"
 #include "ddraw_impl.h"
 
-#include <3ds/gpu/shaderProgram.h>
+#include <citro3d.h>
 #include <SDL3/SDL.h>
-#include "citro3d.h"
 #include <vector>
 
 DEFINE_GUID(Citro3D_GUID, 0x682656F3, 0x0000, 0x0000, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3D, 0x13);
@@ -44,6 +43,7 @@ private:
 	SDL_Surface* m_renderedImage;
 	C3D_RenderTarget* m_renderTarget;
 	shaderProgram_s* m_shaderProgram;
+	int m_projectionShaderUniformLocation;
 };
 
 inline static void Citro3DRenderer_EnumDevice(LPD3DENUMDEVICESCALLBACK cb, void* ctx)

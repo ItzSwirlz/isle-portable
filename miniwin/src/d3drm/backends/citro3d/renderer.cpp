@@ -4,12 +4,11 @@
 #include "miniwin/d3d.h"
 #include "miniwin/d3drm.h"
 #include "miniwin/windows.h"
-#include "citro3d.h"
+
+#include <citro3d.h>
+#include <3ds.h>
 
 #include "vshader_shbin.h"
-#include <3ds/gpu/shaderProgram.h>
-#include <3ds/gpu/shbin.h>
-#include <c3d/base.h>
 
 Direct3DRMRenderer* Citro3DRenderer::Create(DWORD width, DWORD height)
 {
@@ -41,6 +40,10 @@ Citro3DRenderer::Citro3DRenderer(DWORD width, DWORD height)
 	C3D_BindProgram(m_shaderProgram);
 
 	// todo: move to scene init next
+	m_projectionShaderUniformLocation = shaderInstanceGetUniformLocation(m_shaderProgram->vertexShader, "projection");
+
+	C3D_RenderTargetClear(m_renderTarget, C3D_CLEAR_ALL, C3D_CLEAR_COLOR, 0);
+	C3D_RenderTargetSetOutput(m_renderTarget, GFX_TOP, GFX_LEFT, 0);
 
 	MINIWIN_NOT_IMPLEMENTED();
 }
@@ -105,6 +108,7 @@ HRESULT Citro3DRenderer::BeginFrame()
 {
 	MINIWIN_NOT_IMPLEMENTED();
 	C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+	C3D_FrameDrawOn(m_renderTarget);
 	return S_OK;
 }
 
@@ -164,6 +168,8 @@ void Citro3DRenderer::Draw2DImage(Uint32 textureId, const SDL_Rect& srcRect, con
 
 	// TODO: isLeftHanded set to false. Should it be true?
 	Mtx_OrthoTilt(&mtx, left, right, bottom, top, -1, 1, false);
+
+	C3D_FVUnifMtx4x4(GPU_VERTEX_SHADER, m_projectionShaderUniformLocation, &mtx);
 }
 
 void Citro3DRenderer::Download(SDL_Surface* target)

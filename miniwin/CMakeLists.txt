@@ -49,14 +49,20 @@ else()
 endif()
 
 if(NINTENDO_3DS)
+  find_library(CITRO3D_LIBRARY NAMES citro3dd)
   find_library(CTRU_LIBRARY NAMES ctru)
-  find_library(CITRO3D_LIBRARY NAMES citro3d)
+
   if(CTRU_LIBRARY AND CITRO3D_LIBRARY)
     message(STATUS "Found libctru and citro3d: enabling Citro3D renderer")
-    target_sources(miniwin PRIVATE src/d3drm/backends/citro3d/renderer.cpp src/d3drm/backends/citro3d/shaders/generated/vshader.shbin.o)
-    target_include_directories(miniwin PRIVATE src/d3drm/backends/citro3d/shaders/generated)
+
+    target_sources(miniwin PRIVATE src/d3drm/backends/citro3d/renderer.cpp)
+
     target_compile_definitions(miniwin PRIVATE USE_CITRO3D)
-    target_link_libraries(miniwin PRIVATE ctru citro3d)
+
+    ctr_add_shader_library(vshader src/d3drm/backends/citro3d/vshader.v.pica)
+    dkp_add_embedded_binary_library(3ds_shaders vshader)
+    target_link_libraries(miniwin PRIVATE ${CITRO3D_LIBRARY} 3ds_shaders)
+
   else()
     message(STATUS "🧩 Citro3D support not enabled")
   endif()
