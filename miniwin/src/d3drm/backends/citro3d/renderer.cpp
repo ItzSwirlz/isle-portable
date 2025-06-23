@@ -1,3 +1,4 @@
+#include "SDL3/SDL_surface.h"
 #include "citro3d.h"
 #include "d3drmrenderer_citro3d.h"
 #include "miniwin.h"
@@ -5,15 +6,17 @@
 #include "miniwin/d3drm.h"
 #include "miniwin/windows.h"
 
-Direct3DRMRenderer* Citro3DRenderer::Create()
+Direct3DRMRenderer* Citro3DRenderer::Create(DWORD width, DWORD height)
 {
 	MINIWIN_NOT_IMPLEMENTED();
-	return new Citro3DRenderer();
+	return new Citro3DRenderer(width, height);
 }
 
 // constructor parameters not finalized
-Citro3DRenderer::Citro3DRenderer()
+Citro3DRenderer::Citro3DRenderer(DWORD width, DWORD height)
 {
+	m_width = width;
+	m_height = height;
 	MINIWIN_NOT_IMPLEMENTED();
 }
 
@@ -47,16 +50,6 @@ Uint32 Citro3DRenderer::GetMeshId(IDirect3DRMMesh* mesh, const MeshGroup* meshGr
 {
 	MINIWIN_NOT_IMPLEMENTED();
 	return 0;
-}
-
-DWORD Citro3DRenderer::GetWidth()
-{
-	return 400;
-}
-
-DWORD Citro3DRenderer::GetHeight()
-{
-	return 240;
 }
 
 void Citro3DRenderer::GetDesc(D3DDEVICEDESC* halDesc, D3DDEVICEDESC* helDesc)
@@ -107,4 +100,29 @@ HRESULT Citro3DRenderer::FinalizeFrame()
 {
 	MINIWIN_NOT_IMPLEMENTED();
 	return S_OK;
+}
+
+void Citro3DRenderer::Resize(int width, int height, const ViewportTransform& viewportTransform)
+{
+	MINIWIN_NOT_IMPLEMENTED();
+}
+
+void Citro3DRenderer::Clear(float r, float g, float b)
+{
+	MINIWIN_NOT_IMPLEMENTED();
+}
+
+void Citro3DRenderer::Flip()
+{
+	MINIWIN_NOT_IMPLEMENTED();
+}
+
+void Citro3DRenderer::Draw2DImage(Uint32 textureId, const SDL_Rect& srcRect, const SDL_Rect& dstRect)
+{
+	MINIWIN_NOT_IMPLEMENTED();
+}
+
+void Citro3DRenderer::Download(SDL_Surface* target)
+{
+	MINIWIN_NOT_IMPLEMENTED();
 }

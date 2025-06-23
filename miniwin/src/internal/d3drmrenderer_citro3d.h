@@ -11,10 +11,10 @@ DEFINE_GUID(Citro3D_GUID, 0x682656F3, 0x0000, 0x0000, 0x00, 0x00, 0x00, 0x00, 0x
 
 class Citro3DRenderer : public Direct3DRMRenderer {
 public:
-	static Direct3DRMRenderer* Create();
+	static Direct3DRMRenderer* Create(DWORD width, DWORD height);
 
 	// constructor parameters not finalized
-	Citro3DRenderer();
+	Citro3DRenderer(DWORD width, DWORD height);
 	~Citro3DRenderer() override;
 
 	void PushLights(const SceneLight* lightsArray, size_t count) override;
@@ -22,8 +22,6 @@ public:
 	void SetFrustumPlanes(const Plane* frustumPlanes) override;
 	Uint32 GetTextureId(IDirect3DRMTexture* texture) override;
 	Uint32 GetMeshId(IDirect3DRMMesh* mesh, const MeshGroup* meshGroup) override;
-	DWORD GetWidth() override;
-	DWORD GetHeight() override;
 	void GetDesc(D3DDEVICEDESC* halDesc, D3DDEVICEDESC* helDesc) override;
 	const char* GetName() override;
 	HRESULT BeginFrame() override;
@@ -35,11 +33,16 @@ public:
 		const Appearance& appearance
 	) override;
 	HRESULT FinalizeFrame() override;
+	void Resize(int width, int height, const ViewportTransform& viewportTransform) override;
+	void Clear(float r, float g, float b) override;
+	void Flip() override;
+	void Draw2DImage(Uint32 textureId, const SDL_Rect& srcRect, const SDL_Rect& dstRect) override;
+	void Download(SDL_Surface* target) override;
 };
 
 inline static void Citro3DRenderer_EnumDevice(LPD3DENUMDEVICESCALLBACK cb, void* ctx)
 {
-	Direct3DRMRenderer* device = Citro3DRenderer::Create();
+	Direct3DRMRenderer* device = Citro3DRenderer::Create(640, 480);
 	if (device) {
 		EnumDevice(cb, ctx, device, Citro3D_GUID);
 		delete device;
