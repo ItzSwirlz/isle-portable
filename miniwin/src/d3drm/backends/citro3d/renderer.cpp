@@ -1,14 +1,23 @@
 #include "SDL3/SDL_surface.h"
-#include "citro3d.h"
 #include "d3drmrenderer_citro3d.h"
 #include "miniwin.h"
 #include "miniwin/d3d.h"
 #include "miniwin/d3drm.h"
 #include "miniwin/windows.h"
+#include "citro3d.h"
+
+static C3D_RenderTarget* g_renderTarget;
 
 Direct3DRMRenderer* Citro3DRenderer::Create(DWORD width, DWORD height)
 {
-	MINIWIN_NOT_IMPLEMENTED();
+	// TODO: Doesn't SDL call this function?
+	gfxInitDefault();
+
+	C3D_Init(C3D_DEFAULT_CMDBUF_SIZE);
+
+	// TODO: is GPU_RB_RGBA8 correct?
+	// TODO: is GPU_RB_DEPTH24_STENCIL8 correct?
+	g_renderTarget = C3D_RenderTargetCreate(width, height, GPU_RB_RGBA8, GPU_RB_DEPTH24_STENCIL8);
 	return new Citro3DRenderer(width, height);
 }
 
@@ -26,6 +35,7 @@ Citro3DRenderer::Citro3DRenderer(DWORD width, DWORD height)
 Citro3DRenderer::~Citro3DRenderer()
 {
 	SDL_DestroySurface(m_renderedImage);
+	C3D_RenderTargetDelete(g_renderTarget);
 }
 
 void Citro3DRenderer::PushLights(const SceneLight* lightsArray, size_t count)
@@ -81,6 +91,7 @@ const char* Citro3DRenderer::GetName()
 HRESULT Citro3DRenderer::BeginFrame()
 {
 	MINIWIN_NOT_IMPLEMENTED();
+	C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
 	return S_OK;
 }
 
@@ -102,6 +113,7 @@ void Citro3DRenderer::SubmitDraw(
 HRESULT Citro3DRenderer::FinalizeFrame()
 {
 	MINIWIN_NOT_IMPLEMENTED();
+	C3D_FrameEnd(0);
 	return S_OK;
 }
 
