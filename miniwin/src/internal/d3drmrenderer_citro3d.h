@@ -5,6 +5,7 @@
 #include "ddraw_impl.h"
 
 #include <SDL3/SDL.h>
+#include "citro3d.h"
 #include <vector>
 
 DEFINE_GUID(Citro3D_GUID, 0x682656F3, 0x0000, 0x0000, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3D, 0x13);
@@ -40,6 +41,7 @@ public:
 	void Download(SDL_Surface* target) override;
 private:
 	SDL_Surface* m_renderedImage;
+	C3D_RenderTarget* m_renderTarget;
 };
 
 inline static void Citro3DRenderer_EnumDevice(LPD3DENUMDEVICESCALLBACK cb, void* ctx)

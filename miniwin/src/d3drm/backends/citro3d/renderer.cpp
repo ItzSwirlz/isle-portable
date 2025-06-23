@@ -6,8 +6,6 @@
 #include "miniwin/windows.h"
 #include "citro3d.h"
 
-static C3D_RenderTarget* g_renderTarget;
-
 Direct3DRMRenderer* Citro3DRenderer::Create(DWORD width, DWORD height)
 {
 	// TODO: Doesn't SDL call this function?
@@ -15,9 +13,6 @@ Direct3DRMRenderer* Citro3DRenderer::Create(DWORD width, DWORD height)
 
 	C3D_Init(C3D_DEFAULT_CMDBUF_SIZE);
 
-	// TODO: is GPU_RB_RGBA8 correct?
-	// TODO: is GPU_RB_DEPTH24_STENCIL8 correct?
-	g_renderTarget = C3D_RenderTargetCreate(width, height, GPU_RB_RGBA8, GPU_RB_DEPTH24_STENCIL8);
 	return new Citro3DRenderer(width, height);
 }
 
@@ -29,13 +24,18 @@ Citro3DRenderer::Citro3DRenderer(DWORD width, DWORD height)
 
 	// FIXME: is this the right pixel format?
 	m_renderedImage = SDL_CreateSurface(m_width, m_height, SDL_PIXELFORMAT_RGBA32);
+
+	// TODO: is GPU_RB_RGBA8 correct?
+	// TODO: is GPU_RB_DEPTH24_STENCIL8 correct?
+	m_renderTarget = C3D_RenderTargetCreate(width, height, GPU_RB_RGBA8, GPU_RB_DEPTH24_STENCIL8);
+
 	MINIWIN_NOT_IMPLEMENTED();
 }
 
 Citro3DRenderer::~Citro3DRenderer()
 {
 	SDL_DestroySurface(m_renderedImage);
-	C3D_RenderTargetDelete(g_renderTarget);
+	C3D_RenderTargetDelete(m_renderTarget);
 }
 
 void Citro3DRenderer::PushLights(const SceneLight* lightsArray, size_t count)
@@ -120,8 +120,11 @@ HRESULT Citro3DRenderer::FinalizeFrame()
 void Citro3DRenderer::Resize(int width, int height, const ViewportTransform& viewportTransform)
 {
 	MINIWIN_NOT_IMPLEMENTED();
-	SDL_DestroySurface(m_renderedImage);
+	m_width = width;
+	m_height = height;
+	m_viewportTransform = viewportTransform;
 
+	SDL_DestroySurface(m_renderedImage);
 	// FIXME: is this the right pixel format?
 	m_renderedImage = SDL_CreateSurface(m_width, m_height, SDL_PIXELFORMAT_RGBA32);
 }
@@ -139,6 +142,15 @@ void Citro3DRenderer::Flip()
 void Citro3DRenderer::Draw2DImage(Uint32 textureId, const SDL_Rect& srcRect, const SDL_Rect& dstRect)
 {
 	MINIWIN_NOT_IMPLEMENTED();
+	float left = -m_viewportTransform.offsetX / m_viewportTransform.scale;
+	float right = (m_width - m_viewportTransform.offsetX) / m_viewportTransform.scale;
+	float top = -m_viewportTransform.offsetY / m_viewportTransform.scale;
+	float bottom = (m_height - m_viewportTransform.offsetY) / m_viewportTransform.scale;
+
+	C3D_Mtx mtx;
+
+	// TODO: isLeftHanded set to false. Should it be true?
+	Mtx_OrthoTilt(&mtx, left, right, bottom, top, -1, 1, false);
 }
 
 void Citro3DRenderer::Download(SDL_Surface* target)
