@@ -50,8 +50,10 @@ Citro3DRenderer::Citro3DRenderer(DWORD width, DWORD height)
 	vsh_dvlb = DVLB_ParseFile((u32*)vshader_shbin, vshader_shbin_size);
 	SDL_Log("pre program set vsh");
 	shaderProgramSetVsh(&program, &vsh_dvlb->DVLE[0]);
+
+	// WARNING: This might crash, not sure
 	SDL_Log("pre bind");
-	// C3D_BindProgram(&program);
+	C3D_BindProgram(&program);
 
 	// todo: move to scene init next
 	SDL_Log("setting uniform loc");
