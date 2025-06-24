@@ -1,5 +1,6 @@
 #pragma once
 
+#include "SDL3/SDL_log.h"
 #include "d3drmrenderer.h"
 #include "d3drmtexture_impl.h"
 #include "ddraw_impl.h"
@@ -8,7 +9,7 @@
 #include <SDL3/SDL.h>
 #include <vector>
 
-DEFINE_GUID(Citro3D_GUID, 0x682656F3, 0x0000, 0x0000, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3D, 0x13);
+DEFINE_GUID(Citro3D_GUID, 0x682656F3, 0x0000, 0x0000, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07);
 
 class Citro3DRenderer : public Direct3DRMRenderer {
 public:
@@ -30,6 +31,8 @@ public:
 	void SubmitDraw(
 		DWORD meshId,
 		const D3DRMMATRIX4D& modelViewMatrix,
+		const D3DRMMATRIX4D& worldMatrix,
+		const D3DRMMATRIX4D& viewMatrix,
 		const Matrix3x3& normalMatrix,
 		const Appearance& appearance
 	) override;
@@ -42,13 +45,13 @@ public:
 private:
 	SDL_Surface* m_renderedImage;
 	C3D_RenderTarget* m_renderTarget;
-	shaderProgram_s* m_shaderProgram;
 	int m_projectionShaderUniformLocation;
 };
 
 inline static void Citro3DRenderer_EnumDevice(LPD3DENUMDEVICESCALLBACK cb, void* ctx)
 {
-	Direct3DRMRenderer* device = Citro3DRenderer::Create(640, 480);
+	SDL_Log("Hello, enuming device");
+	Direct3DRMRenderer* device = Citro3DRenderer::Create(400, 240);
 	if (device) {
 		EnumDevice(cb, ctx, device, Citro3D_GUID);
 		delete device;

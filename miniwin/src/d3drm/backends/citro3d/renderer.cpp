@@ -5,15 +5,26 @@
 #include "miniwin/d3drm.h"
 #include "miniwin/windows.h"
 
+#include <3ds/console.h>
+#include <3ds/gfx.h>
+#include <3ds/gpu/shaderProgram.h>
 #include <citro3d.h>
 #include <3ds.h>
 
 #include "vshader_shbin.h"
 
+int m_projectionShaderUniformLocation;
+
+void sceneInit(shaderProgram_s* prog) {
+	m_projectionShaderUniformLocation = shaderInstanceGetUniformLocation(prog->vertexShader, "projection");
+}
+
 Direct3DRMRenderer* Citro3DRenderer::Create(DWORD width, DWORD height)
 {
 	// TODO: Doesn't SDL call this function?
 	gfxInitDefault();
+	gfxSet3D(false);
+	consoleInit(GFX_BOTTOM, nullptr);
 
 	C3D_Init(C3D_DEFAULT_CMDBUF_SIZE);
 
@@ -23,26 +34,37 @@ Direct3DRMRenderer* Citro3DRenderer::Create(DWORD width, DWORD height)
 // constructor parameters not finalized
 Citro3DRenderer::Citro3DRenderer(DWORD width, DWORD height)
 {
+	SDL_Log("Hello from ctor");
+	shaderProgram_s program;
 	DVLB_s *vsh_dvlb;
 	m_width = width;
 	m_height = height;
 
 	// FIXME: is this the right pixel format?
+	SDL_Log("Pre create surface");
 	m_renderedImage = SDL_CreateSurface(m_width, m_height, SDL_PIXELFORMAT_RGBA32);
+
+	SDL_Log("Pre shader program init");
+	shaderProgramInit(&program);
+	SDL_Log("Pre parse file");
+	vsh_dvlb = DVLB_ParseFile((u32*)vshader_shbin, vshader_shbin_size);
+	SDL_Log("pre program set vsh");
+	shaderProgramSetVsh(&program, &vsh_dvlb->DVLE[0]);
+	SDL_Log("pre bind");
+	// C3D_BindProgram(&program);
+
+	// todo: move to scene init next
+	SDL_Log("setting uniform loc");
+	sceneInit(&program);
 
 	// TODO: is GPU_RB_RGBA8 correct?
 	// TODO: is GPU_RB_DEPTH24_STENCIL8 correct?
+	SDL_Log("Pre render target create");
 	m_renderTarget = C3D_RenderTargetCreate(width, height, GPU_RB_RGBA8, GPU_RB_DEPTH24_STENCIL8);
 
-	shaderProgramInit(m_shaderProgram);
-	vsh_dvlb = DVLB_ParseFile((u32*)vshader_shbin, vshader_shbin_size);
-	shaderProgramSetVsh(m_shaderProgram, &vsh_dvlb->DVLE[0]);
-	C3D_BindProgram(m_shaderProgram);
-
-	// todo: move to scene init next
-	m_projectionShaderUniformLocation = shaderInstanceGetUniformLocation(m_shaderProgram->vertexShader, "projection");
-
+	SDL_Log("render clear");
 	C3D_RenderTargetClear(m_renderTarget, C3D_CLEAR_ALL, C3D_CLEAR_COLOR, 0);
+	SDL_Log("render set out");
 	C3D_RenderTargetSetOutput(m_renderTarget, GFX_TOP, GFX_LEFT, 0);
 
 	MINIWIN_NOT_IMPLEMENTED();
@@ -120,6 +142,8 @@ void Citro3DRenderer::EnableTransparency()
 void Citro3DRenderer::SubmitDraw(
 	DWORD meshId,
 	const D3DRMMATRIX4D& modelViewMatrix,
+	const D3DRMMATRIX4D& worldMatrix,
+	const D3DRMMATRIX4D& viewMatrix,
 	const Matrix3x3& normalMatrix,
 	const Appearance& appearance
 )
