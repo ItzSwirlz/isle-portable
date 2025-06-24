@@ -19,6 +19,13 @@ int m_projectionShaderUniformLocation;
 
 void sceneInit(shaderProgram_s* prog) {
 	m_projectionShaderUniformLocation = shaderInstanceGetUniformLocation(prog->vertexShader, "projection");
+
+	// src: https://github.com/devkitPro/citro3d/blob/9f21cf7b380ce6f9e01a0420f19f0763e5443ca7/test/3ds/source/main.cpp#L122C3-L126C62
+	C3D_AttrInfo* attrInfo = C3D_GetAttrInfo();
+  	AttrInfo_Init(attrInfo);
+  	AttrInfo_AddLoader(attrInfo, 0, GPU_FLOAT, 3); // v0=position
+  	AttrInfo_AddLoader(attrInfo, 1, GPU_FLOAT, 2); // v1=texcoord
+  	AttrInfo_AddLoader(attrInfo, 2, GPU_FLOAT, 3); // v2=normal
 }
 
 Direct3DRMRenderer* Citro3DRenderer::Create(DWORD width, DWORD height)
