@@ -43,6 +43,7 @@ public:
 	void Draw2DImage(Uint32 textureId, const SDL_Rect& srcRect, const SDL_Rect& dstRect) override;
 	void Download(SDL_Surface* target) override;
 private:
+	D3DRMMATRIX4D m_projection;
 	SDL_Surface* m_renderedImage;
 	C3D_RenderTarget* m_renderTarget;
 	int m_projectionShaderUniformLocation;

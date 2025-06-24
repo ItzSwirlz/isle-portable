@@ -41,8 +41,6 @@ Citro3DRenderer::Citro3DRenderer(DWORD width, DWORD height)
 	m_height = height;
 
 	// FIXME: is this the right pixel format?
-	SDL_Log("Pre create surface");
-	m_renderedImage = SDL_CreateSurface(m_width, m_height, SDL_PIXELFORMAT_RGBA32);
 
 	SDL_Log("Pre shader program init");
 	shaderProgramInit(&program);
@@ -67,6 +65,8 @@ Citro3DRenderer::Citro3DRenderer(DWORD width, DWORD height)
 	SDL_Log("render set out");
 	C3D_RenderTargetSetOutput(m_renderTarget, GFX_TOP, GFX_LEFT, 0);
 
+	SDL_Log("Pre create surface");
+	m_renderedImage = SDL_CreateSurface(m_width, m_height, SDL_PIXELFORMAT_RGBA32);
 	MINIWIN_NOT_IMPLEMENTED();
 }
 
@@ -83,7 +83,8 @@ void Citro3DRenderer::PushLights(const SceneLight* lightsArray, size_t count)
 
 void Citro3DRenderer::SetProjection(const D3DRMMATRIX4D& projection, D3DVALUE front, D3DVALUE back)
 {
-	MINIWIN_NOT_IMPLEMENTED();
+	MINIWIN_TRACE("Set projection");
+	memcpy(&m_projection, projection, sizeof(D3DRMMATRIX4D));
 }
 
 void Citro3DRenderer::SetFrustumPlanes(const Plane* frustumPlanes)
@@ -129,6 +130,7 @@ const char* Citro3DRenderer::GetName()
 HRESULT Citro3DRenderer::BeginFrame()
 {
 	MINIWIN_NOT_IMPLEMENTED();
+	gspWaitForVBlank(); // FIXME: is this the right place to call, if we should at all?
 	C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
 	C3D_FrameDrawOn(m_renderTarget);
 	return S_OK;
@@ -183,6 +185,7 @@ void Citro3DRenderer::Flip()
 void Citro3DRenderer::Draw2DImage(Uint32 textureId, const SDL_Rect& srcRect, const SDL_Rect& dstRect)
 {
 	MINIWIN_NOT_IMPLEMENTED();
+	MINIWIN_TRACE("on draw 2d image");
 	float left = -m_viewportTransform.offsetX / m_viewportTransform.scale;
 	float right = (m_width - m_viewportTransform.offsetX) / m_viewportTransform.scale;
 	float top = -m_viewportTransform.offsetY / m_viewportTransform.scale;
@@ -191,8 +194,10 @@ void Citro3DRenderer::Draw2DImage(Uint32 textureId, const SDL_Rect& srcRect, con
 	C3D_Mtx mtx;
 
 	// TODO: isLeftHanded set to false. Should it be true?
+	MINIWIN_TRACE("pre orthotilt");
 	Mtx_OrthoTilt(&mtx, left, right, bottom, top, -1, 1, false);
 
+	MINIWIN_TRACE("pre fvunifmtx4x4");
 	C3D_FVUnifMtx4x4(GPU_VERTEX_SHADER, m_projectionShaderUniformLocation, &mtx);
 }
 
