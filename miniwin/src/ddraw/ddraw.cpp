@@ -358,6 +358,11 @@ HRESULT DirectDrawImpl::CreateDevice(
 		DDRenderer = DirectX9Renderer::Create(DDSDesc.dwWidth, DDSDesc.dwHeight);
 	}
 #endif
+#ifdef USE_CITRO3D
+	else if (SDL_memcmp(&guid, &Citro3D_GUID, sizeof(GUID)) == 0) {
+		DDRenderer = Citro3DRenderer::Create(DDSDesc.dwWidth, DDSDesc.dwHeight);
+	}
+#endif
 	else if (SDL_memcmp(&guid, &SOFTWARE_GUID, sizeof(GUID)) == 0) {
 		DDRenderer = new Direct3DRMSoftwareRenderer(DDSDesc.dwWidth, DDSDesc.dwHeight);
 	}
