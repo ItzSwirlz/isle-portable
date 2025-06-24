@@ -7,7 +7,9 @@
 
 #include <3ds/console.h>
 #include <3ds/gfx.h>
+#include <3ds/gpu/gx.h>
 #include <3ds/gpu/shaderProgram.h>
+#include <c3d/framebuffer.h>
 #include <citro3d.h>
 #include <3ds.h>
 
@@ -61,9 +63,26 @@ Citro3DRenderer::Citro3DRenderer(DWORD width, DWORD height)
 	m_renderTarget = C3D_RenderTargetCreate(width, height, GPU_RB_RGBA8, GPU_RB_DEPTH24_STENCIL8);
 
 	SDL_Log("render clear");
-	C3D_RenderTargetClear(m_renderTarget, C3D_CLEAR_ALL, C3D_CLEAR_COLOR, 0);
+	// TODO: what color should be used, if we shouldn't use 0x777777FF
+	C3D_RenderTargetClear(m_renderTarget, C3D_CLEAR_ALL, 0x777777FF, 0);
+
+	// TODO: Cleanup as we see what is needed
+	m_flipVertFlag = 0;
+	m_outTiledFlag = 0;
+	m_rawCopyFlag = 0;
+
+	// TODO: correct values?
+	m_transferInputFormatFlag = GX_TRANSFER_FMT_RGBA8;
+	m_transferOutputFormatFlag = GX_TRANSFER_FMT_RGB8;
+
+	m_transferScaleFlag = GX_TRANSFER_SCALE_NO;
+
+	m_transferFlags = (GX_TRANSFER_FLIP_VERT(m_flipVertFlag) | GX_TRANSFER_OUT_TILED(m_outTiledFlag) | \
+		GX_TRANSFER_RAW_COPY(m_rawCopyFlag) | GX_TRANSFER_IN_FORMAT(m_transferInputFormatFlag) | \
+		GX_TRANSFER_OUT_FORMAT(m_transferOutputFormatFlag) | GX_TRANSFER_SCALING(m_transferScaleFlag));
+
 	SDL_Log("render set out");
-	C3D_RenderTargetSetOutput(m_renderTarget, GFX_TOP, GFX_LEFT, 0);
+	C3D_RenderTargetSetOutput(m_renderTarget, GFX_TOP, GFX_LEFT, m_transferFlags);
 
 	SDL_Log("Pre create surface");
 	m_renderedImage = SDL_CreateSurface(m_width, m_height, SDL_PIXELFORMAT_RGBA32);
@@ -130,6 +149,8 @@ const char* Citro3DRenderer::GetName()
 HRESULT Citro3DRenderer::BeginFrame()
 {
 	MINIWIN_NOT_IMPLEMENTED();
+	gfxFlushBuffers();
+	gfxSwapBuffers();
 	gspWaitForVBlank(); // FIXME: is this the right place to call, if we should at all?
 	C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
 	C3D_FrameDrawOn(m_renderTarget);

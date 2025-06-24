@@ -47,6 +47,14 @@ private:
 	SDL_Surface* m_renderedImage;
 	C3D_RenderTarget* m_renderTarget;
 	int m_projectionShaderUniformLocation;
+
+	bool m_flipVertFlag;
+	bool m_outTiledFlag;
+	bool m_rawCopyFlag;
+	GX_TRANSFER_FORMAT m_transferInputFormatFlag;
+	GX_TRANSFER_FORMAT m_transferOutputFormatFlag;
+	GX_TRANSFER_SCALE m_transferScaleFlag;
+	u32 m_transferFlags;
 };
 
 inline static void Citro3DRenderer_EnumDevice(LPD3DENUMDEVICESCALLBACK cb, void* ctx)
