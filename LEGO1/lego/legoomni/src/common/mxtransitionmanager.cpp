@@ -105,7 +105,11 @@ MxResult MxTransitionManager::StartTransition(
 			backgroundAudioManager->Stop();
 		}
 
+#ifdef __3DS__
+		m_mode = e_noAnimation;
+#else
 		m_mode = p_animationType;
+#endif
 
 		m_copyFlags.m_bit0 = p_doCopy;
 
