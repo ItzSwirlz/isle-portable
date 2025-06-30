@@ -19,11 +19,6 @@ static int uLoc_lightVec;
 static int uLoc_lightClr;
 static int uLoc_shininess;
 
-Direct3DRMRenderer* Citro3DRenderer::Create(DWORD width, DWORD height)
-{
-	return new Citro3DRenderer(width, height);
-}
-
 Citro3DRenderer::Citro3DRenderer(DWORD width, DWORD height)
 {
 	m_width = 320;
