@@ -26,7 +26,7 @@ struct C3DMeshCacheEntry {
 
 class Citro3DRenderer : public Direct3DRMRenderer {
 public:
-    static Direct3DRMRenderer* Create(DWORD width, DWORD height);
+	static Direct3DRMRenderer* Create(DWORD width, DWORD height);
 	Citro3DRenderer(DWORD width, DWORD height);
 	~Citro3DRenderer() override;
 
@@ -69,7 +69,7 @@ private:
 inline static void Citro3DRenderer_EnumDevice(LPD3DENUMDEVICESCALLBACK cb, void* ctx)
 {
 	Direct3DRMRenderer* device = Citro3DRenderer::Create(640, 480);
-	if(!device) {
+	if (!device) {
 		return;
 	}
 	delete device;
