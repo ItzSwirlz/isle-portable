@@ -1,3 +1,4 @@
+#include "d3drmrenderer.h"
 #include "d3drmrenderer_citro3d.h"
 #include "d3drmtexture_impl.h"
 #include "ddraw_impl.h"
@@ -17,6 +18,11 @@ static int uLoc_meshColor;
 static int uLoc_lightVec;
 static int uLoc_lightClr;
 static int uLoc_shininess;
+
+Direct3DRMRenderer* Citro3DRenderer::Create(DWORD width, DWORD height)
+{
+	return new Citro3DRenderer(width, height);
+}
 
 Citro3DRenderer::Citro3DRenderer(DWORD width, DWORD height)
 {
@@ -360,15 +366,6 @@ Uint32 Citro3DRenderer::GetMeshId(IDirect3DRMMesh* mesh, const MeshGroup* meshGr
 	m_meshs.push_back(std::move(newCache));
 	AddMeshDestroyCallback((Uint32) (m_meshs.size() - 1), mesh);
 	return (Uint32) (m_meshs.size() - 1);
-}
-
-void Citro3DRenderer::GetDesc(D3DDEVICEDESC* halDesc, D3DDEVICEDESC* helDesc)
-{
-}
-
-const char* Citro3DRenderer::GetName()
-{
-	return "Citro3D";
 }
 
 void Citro3DRenderer::StartFrame()
