@@ -47,7 +47,7 @@ LegoVideoManager::LegoVideoManager()
 	m_cursorXCopy = m_cursorY;
 	m_cursorSurface = NULL;
 	m_fullScreenMovie = FALSE;
-	m_drawFPS = FALSE;
+	m_drawFPS = TRUE;
 	m_unk0x528 = NULL;
 	m_arialFont = NULL;
 	m_unk0xe5 = FALSE;
