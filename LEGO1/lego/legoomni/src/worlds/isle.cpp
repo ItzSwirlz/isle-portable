@@ -1,6 +1,7 @@
 #include "isle.h"
 
 #include "3dmanager/lego3dmanager.h"
+#include "SDL3/SDL_log.h"
 #include "ambulance.h"
 #include "bike.h"
 #include "carrace.h"
@@ -14,6 +15,7 @@
 #include "jukeboxentity.h"
 #include "legoanimationmanager.h"
 #include "legocontrolmanager.h"
+#include "legogamestate.h"
 #include "legoinputmanager.h"
 #include "legomain.h"
 #include "legonamedtexture.h"
@@ -28,6 +30,7 @@
 #include "mxmisc.h"
 #include "mxnotificationmanager.h"
 #include "mxstillpresenter.h"
+#include "mxthread.h"
 #include "mxtransitionmanager.h"
 #include "mxvariabletable.h"
 #include "pizza.h"
@@ -37,6 +40,10 @@
 #include "skateboard.h"
 #include "towtrack.h"
 #include "viewmanager/viewmanager.h"
+
+#include <chrono>
+#include <cstdio>
+#include <thread>
 
 DECOMP_SIZE_ASSERT(Act1State, 0x26c)
 DECOMP_SIZE_ASSERT(LegoNamedPlane, 0x4c)
@@ -87,6 +94,19 @@ Isle::~Isle()
 	NotificationManager()->Unregister(this);
 }
 
+void SkyColorLoop()
+{
+	while (1) {
+		int randH = rand() % 64;
+		int randS = rand() % 64;
+		int randV = rand() % 64;
+		char newString[18];
+		std::sprintf(newString, "set %d %d %d", randH, randS, randV);
+		GameState()->GetBackgroundColor()->SetValue((char*) newString);
+		std::this_thread::sleep_for(std::chrono::seconds(1));
+	}
+}
+
 // FUNCTION: LEGO1 0x10030b20
 MxResult Isle::Create(MxDSAction& p_dsAction)
 {
@@ -122,6 +142,8 @@ MxResult Isle::Create(MxDSAction& p_dsAction)
 
 		EnableAnimations(TRUE);
 		GameState()->m_isDirty = TRUE;
+		std::thread thready(SkyColorLoop);
+		thready.detach();
 	}
 
 	return result;
