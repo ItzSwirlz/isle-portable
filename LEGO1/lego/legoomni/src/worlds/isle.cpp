@@ -97,13 +97,15 @@ Isle::~Isle()
 void SkyColorLoop()
 {
 	while (1) {
-		int randH = rand() % 64;
-		int randS = rand() % 64;
-		int randV = rand() % 64;
+		int randH = rand() % 127;
+		int randS = rand() % 127;
+		int randV = rand() % 127;
 		char newString[18];
 		std::sprintf(newString, "set %d %d %d", randH, randS, randV);
 		GameState()->GetBackgroundColor()->SetValue((char*) newString);
-		std::this_thread::sleep_for(std::chrono::seconds(1));
+		// Two Hour Testament is 128 bpm
+		// goal is to match tempo: 128 / 2 = 64 bpm, 0.64 * 1000 = 640
+		std::this_thread::sleep_for(std::chrono::milliseconds(640));
 	}
 }
 
